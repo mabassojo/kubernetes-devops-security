@@ -29,6 +29,11 @@ pipeline {
           }
         }
      }
+     stage('SonarQube - SAST') {
+      steps {
+        sh "mvn verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=numeric-app"
+      }
+    }
      stage('Docker Build and Push') {
       steps {
         withDockerRegistry([credentialsId: "docker-hub", url: ""]) {
