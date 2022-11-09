@@ -31,7 +31,9 @@ pipeline {
      }
      stage('SonarQube - SAST') {
       steps {
-        sh "mvn verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=numeric-app"
+        sh "mvn verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=numeric"
+        sh "quality_status=$(curl -s -u $SONAR_TOKEN: https://sonarcloud.io/api/qualitygates/project_status?projectKey=numeric | jq -r '.projectStatus.status')"
+        sh "echo 'SonarCloud analysistatus is $quality_status';"
       }
     }
      stage('Docker Build and Push') {
