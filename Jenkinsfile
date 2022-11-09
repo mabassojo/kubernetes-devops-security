@@ -31,9 +31,9 @@ pipeline {
      }
      stage('SonarQube - SAST') {
       steps {
-        sh "mvn verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=numeric"
-        sh "quality_status=$(curl -s -u $SONAR_TOKEN:https://sonarcloud.io/api/qualitygates/project_status?projectKey=numeric | jq -r '.projectStatus.status')"
-        sh "echo 'SonarCloud analysistatus is $quality_status';"
+        sh mvn verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=numeric
+        sh quality_status=$(curl -s -u 90a16c9b99ed201515835cc11ab168b34c549b37:https://sonarcloud.io/api/qualitygates/project_status?projectKey=numeric | jq -r '.projectStatus.status')
+        sh echo 'SonarCloud analysistatus is $quality_status';
       }
     }
      stage('Docker Build and Push') {
