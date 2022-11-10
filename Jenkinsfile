@@ -29,13 +29,26 @@ pipeline {
           }
         }
      }
-     stage('SonarQube - SAST') {
+    //  stage('SonarQube - SAST') {
+    //   steps {
+    //     sh "mvn verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=numeric"
+    //     //sh "quality_status=$(curl -s -u 90a16c9b99ed201515835cc11ab168b34c549b37: https://sonarcloud.io/api/qualitygates/project_status?projectKey=numeric | jq -r '.projectStatus.status')"
+    //     // sh echo 'SonarCloud analysistatus is $quality_status';
+    //   }
+    // }
+     stage('SonarQube 2 - SAST') {
       steps {
-        sh "mvn verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=numeric"
-        sh "quality_status=$(curl -s -u 90a16c9b99ed201515835cc11ab168b34c549b37: https://sonarcloud.io/api/qualitygates/project_status?projectKey=numeric | jq -r '.projectStatus.status')"
-        // sh echo 'SonarCloud analysistatus is $quality_status';
+        withSonarQubeEnv('SonarQube') {
+          sh "mvn sonar:sonar -Dsonar.projectKey=numeric -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=90a16c9b99ed201515835cc11ab168b34c549b37"
+        }
+        timeout(time: 2, unit: 'MINUTES') {
+          script {
+            waitForQualityGate abortPipeline: true
+          }
+        }
       }
     }
+
      stage('Docker Build and Push') {
       steps {
         withDockerRegistry([credentialsId: "docker-hub", url: ""]) {
