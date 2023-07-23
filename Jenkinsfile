@@ -39,7 +39,8 @@ pipeline {
     }
      stage('Vulnerability Scan - Docker ') {
       steps {
-        sh "mvn dependency-check:check"
+        // sh "mvn dependency-check:check"
+        sh "bash trivy-docker-image-scan.sh"
       }
     }
 
@@ -66,7 +67,7 @@ pipeline {
       junit 'target/surefire-reports/*.xml'
       jacoco execPattern: 'target/jacoco.exec'
       pitmutation mutationStatsFile: '**/target/pit-reports/**/mutations.xml'
-      dependencyCheckPublisher pattern: 'target/dependency-check-report.xml'
+    //  dependencyCheckPublisher pattern: 'target/dependency-check-report.xml'
     }
 
     // success {
